@@ -13,4 +13,5 @@ module "workloads" {
 
 module "security" {
  source = "./resource_configuration/security"
+ Kinesis_data_Stream_ARN = module.workloads.Kinesis_data_Stream_ARN
 }

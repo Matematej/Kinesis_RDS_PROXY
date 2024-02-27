@@ -1,33 +1,59 @@
 #lambda ingest Kinesis Data Stream
-resource "aws_iam_role" "lambda_role" {
+#assume role
+resource "aws_iam_role" "role" {
   name = "lambda-role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = "sts:AssumeRole",
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
       },
-      {
-        Effect = "Allow",
-        Action = [
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+# Policy for Kinesis Data Streams
+resource "aws_iam_policy" "policy" {
+  name = "my-test-policy"
+  description = "A test policy"
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
           "kinesis:GetRecords",
           "kinesis:GetShardIterator",
           "kinesis:DescribeStream",
           "kinesis:ListStreams"
-        ],
-        Resource = [
-          "arn:aws:kinesis:YOUR_REGION:YOUR_ACCOUNT_ID:stream/YourKinesisStreamName"
-        ]
-      }
-    ]
-  })
+          ],
+            "Resource": "${var.Kinesis_data_Stream_ARN}"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:*"
+            ],
+            "Resource": "arn:aws:logs:*:*:*"
+        }
+  ]
+}
+EOF
 }
 
-
+# Attached IAM Role and the new created Policy
+resource "aws_iam_role_policy_attachment" "test-attach" {
+  role       = "${aws_iam_role.role.name}"
+  policy_arn = "${aws_iam_policy.policy.arn}"
+}
 
 
 /*

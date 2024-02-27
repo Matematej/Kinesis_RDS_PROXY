@@ -1,6 +1,6 @@
 #Lambda to ingest Kinesis Data Stream
 resource "aws_lambda_function" "ingest_kinesis_data_streams_code" {
-  filename      = "ingest_kinesis_data_streams_code.zip" # Path to your Lambda code ZIP file
+  filename      = "ingest_kinesis_data_streams_code.zip"
   function_name = "ingest_kinesis_data_streams_code"
   role          = var.Kinesis_Data_Stream_IAM_Role_ARN
   handler       = "index.handler"
