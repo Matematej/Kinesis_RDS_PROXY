@@ -1,15 +1,22 @@
+import boto3
+import base64
+
 def lambda_handler(event, context):
-    # The 'event' parameter contains information about the triggering event.
-    # The 'context' parameter provides runtime information.
+    client = boto3.client('kinesis')
+    responses = []
 
-    # Your main logic goes here
-    message = "Hello, World!"
+    for record in event['Records']:
+        try:
+            data_to_decode = record['kinesis']['data']
+            padding = '=' * ((4 - len(data_to_decode) % 4) % 4)
+            decoded_data = base64.b64decode(data_to_decode + padding)
+            responses.append(decoded_data)
+            print('Decoded payload:', decoded_data)
+        except Exception as e:
+            print(f"Error decoding record: {str(e)}")
+            decoded_data = None
 
-    # Print the message (this will appear in the CloudWatch logs)
-    print(message)
-
-    # Return the message (this is optional and depends on your use case)
     return {
         'statusCode': 200,
-        'body': message
+        'body': '\n'.join(str(response) for response in responses)
     }

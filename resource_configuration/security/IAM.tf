@@ -1,7 +1,7 @@
 #lambda ingest Kinesis Data Stream
 #assume role
 resource "aws_iam_role" "role" {
-  name = "lambda-role"
+  name = "lambda-role_kinesis_streams_project"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -21,7 +21,7 @@ EOF
 
 # Policy for Kinesis Data Streams
 resource "aws_iam_policy" "policy" {
-  name = "my-test-policy"
+  name = "lambda-policy_kinesis_streams_project"
   description = "A test policy"
   policy = <<EOF
 {

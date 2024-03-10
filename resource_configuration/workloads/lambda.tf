@@ -1,13 +1,13 @@
 #Lambda to ingest Kinesis Data Stream
 resource "aws_lambda_function" "ingest_kinesis_data_streams_code" {
-  filename      = "ingest_kinesis_data_streams_code.zip"
+  filename      = "${path.module}/lambda_functions_code/ingest_kinesis_data_streams_code.zip"
   function_name = "ingest_kinesis_data_streams_code"
   role          = var.Kinesis_Data_Stream_IAM_Role_ARN
-  handler       = "index.handler"
-  runtime       = "python3.8" # Change to your preferred runtime
+  handler       = "ingest_kinesis_data_streams_code.lambda_handler"
+  runtime       = "python3.11"
 
   tags = {
-    Project     = "Real-time Data Processing",
+    Project     = "Real-time Data Processing"
     Environment = "Prod"
   }
 }
